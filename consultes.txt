@@ -1,0 +1,76 @@
+
+CONSULTAS BD CULAMPOLLA: 
+
+Insertar datos obtenidos desde el formulario cliente: 
+
+$sql =  "INSERT INTO clientes
+(id,fecha,nombre,telefono,email,direccionPostal,recomendado,clienteconocido) VALUES ('0','$fecha','$nombre','$telefono','$email','$direccionPostal','$x','$descripcion')";
+$resultado = mysqli_query($conexion, $sql);
+
+Insertar datos rellenando datos del formulario ventas, se insertaran en la tabla ventas: 
+
+$sql =  "INSERT INTO ventas
+(id,nifproveedor,nifempleado,nombrecliente,idgafa) VALUES ('0','$nifproveedor','$nifempleado','$nombrecliente','$idgafa')";
+$resultado = mysqli_query($conexion, $sql);
+
+Consultas BD xarxa Social y libreria  sigue la misma estructura que la de culampolla para insertar datos pero adaptándose al formulario de cada BD . 
+
+CONSULTAS BD stube: 
+Para obtener los datos de los usuarios y de la tabla datosvideos utilizo esta consulta: 
+
+Use stube;
+select *from usuaris
+INNER JOIN datosvideos
+ON idusuaris_dni= usuarisDni;
+select usuarisDni, codigovideo from datosvideos WHERE email_contraseña like '$_POST['clave']';
+
+Para filtrar los datos de los videos de cada usuario, el control lo haré a través de un formulario de acceso donde el usuario introducirá su email y su contraseña  : 
+
+$resultados = mysqli_query($conexion, " SELECT * FROM  usuaris  WHERE idusuaris_dni like '$valor1' and email_contraseña like '$valor2' ");
+$resultados2 =  mysqli_query ($conexion, " SELECT * FROM datosvideos WHERE usuarisDni like '$valor1' and email like '$valor2' ");
+
+á 
+
+while ($consulta = mysqli_fetch_array($resultados)){
+
+    echo $consulta ['nombre'];  echo $consulta['apellidos']; echo ": ";
+
+    echo "<br>";
+
+
+  }
+echo "<br>";
+while ($consulta2 = mysqli_fetch_array($resultados2)){
+echo $consulta2 ['titulo'];
+
+}
+
+CONSULTA BD libreria: 
+
+use libreria;
+SELECT
+  factura.*,
+  usuarios_clientes.nombre
+ FROM
+	factura
+JOIN
+	usuarios_clientes
+    ON usuarios_clientes.codigocliente=factura.codigocliente
+
+La consulta para insertar datos es igual que la de la BD culampolla pero cambiando las variables de los campos adaptándola a la BD libreria. 
+
+La siguiente consulta es la que he utilizado para validar los datos de los usuarios para abrir las BD, la he ido adaptando cuando ha sido necesario a cada BD: 
+
+$consulta="SELECT * FROM usuarios_clientes WHERE email = '$email' AND contraseña = '$contrasena'";
+$resultados=mysqli_query($conexion, $consulta);
+
+$filas=mysqli_num_rows($resultados);
+if ($filas>0) {
+    header("location:menu.php");
+}else {
+
+    echo "Error en la autenticación";
+
+}
+mysqli_from_result($resultados);
+
